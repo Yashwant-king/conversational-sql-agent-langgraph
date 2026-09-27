@@ -12,9 +12,7 @@ llm_gpt=ChatGroq(
 
 
 
-llm_qwen=ChatGroq(
-    model="qwen/qwen3.8-27b"
-)
+
 
 
 
