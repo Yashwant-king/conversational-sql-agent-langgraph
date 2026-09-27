@@ -1,0 +1,14 @@
+
+## `requirements.txt`
+
+
+langgraph
+langchain
+langchain-core
+langchain-groq
+langchain-openai
+sqlalchemy
+pyodbc
+pydantic
+python-dotenv
+streamlit

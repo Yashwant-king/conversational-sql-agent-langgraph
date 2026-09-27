@@ -1,0 +1,6 @@
+.env
+.venv/
+raag/
+graph/
+m.ipynb
+__pycache__/
