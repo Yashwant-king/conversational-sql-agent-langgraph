@@ -4,6 +4,8 @@ load_dotenv()
 import os
 from langchain_groq import ChatGroq
 
+
+
 llm_gpt=ChatGroq(
     model="openai/gpt-oss-20b"
     )
