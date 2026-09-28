@@ -9,19 +9,22 @@ st.title("SQL Graph Application")
 
 with st.chat_message("user"):
     user_question = st.text_input("Enter your SQL-related question: ")
-   
-if user_question:
+    if user_question:
+          graph_result = app.invoke(cast(SqlState, {
+                          "user_question": user_question,
+                           "operation_not_find":"",
+                          "operation":"",
+                          "sql": "",
+                          "error": "",
+                         "attempts":2,
+                         "approval": "",
+                         "answer": ""
+                     }), config=config)
+         
+sql=graph_result["sql"]   
+if len(sql.strip()) > 0:
     with st.chat_message("assistant"):
-            result = app.invoke(cast(SqlState, {
-                 "user_question": user_question,
-                  "operation_not_find":"",
-                 "operation":"",
-                 "sql": "",
-                 "error": "",
-                "attempts":2,
-                "approval": "",
-                "answer": ""
-            }), config=config)
+         
 
             state = app.get_state(config)
 
@@ -34,11 +37,13 @@ if user_question:
             command_input = st.text_input("Enter command : ")
             if command_input:
                 app.invoke(Command(resume=command_input), config=config)
-                st.write(f"result[\"sql\"] = {result['sql']}")
-                st.write(f"result[\"operation\"] = {result['operation']}")
-                st.write(f"result[\"answer\"] = {result['answer']}")    
-            
-
+                st.write(f"result[\"sql\"] = {graph_result['sql']}")
+                st.write(f"result[\"operation\"] = {graph_result['operation']}")
+                st.write(f"result[\"answer\"] = {graph_result['answer']}")
+                st.write(f"result[\"error\"] = {graph_result['error']}")
+                st.write(f"result[\"\result\"] = {graph_result['result']}")    
+else:
+     st.chat_message("assistant").write("Your question is not related to SQL. Please ask a valid SQL-related question.")
 
 
 

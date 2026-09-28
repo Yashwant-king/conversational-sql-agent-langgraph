@@ -1,5 +1,5 @@
 from sql_graph.sql_state import SqlState
-from llm import llm_gpt,llm_qwen
+from llm import llm_gpt
 from sql.db_schema import get_schema,execute_sql
 from langgraph.graph import START,END
 from pydantic import BaseModel,Field
