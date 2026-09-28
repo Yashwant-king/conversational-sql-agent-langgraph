@@ -155,6 +155,7 @@ def first_routing(state:SqlState):
         raise ValueError(f"state['operation'] is not valid . error in first_routing node. state['operation']={state['operation']}")
         
 
+#-------------------------------------------------------------------------
 
 
 
@@ -166,14 +167,14 @@ def attemp_query_node(state:SqlState):
         "attempts":state["attempts"]-1
     }
 
-    
+#------------------------------------------------------------------    
         
 def refill_attemps(state:SqlState):
     return {
         "attempts":2
     }
 
-
+#----------------------------------------------------------------------
 
 
 def attemp_fix_select(state:SqlState):
@@ -185,7 +186,7 @@ def attemp_fix_select(state:SqlState):
     }
 
 
-
+#-----------------------------------------------------------------------
 
 
 

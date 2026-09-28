@@ -44,8 +44,6 @@ if user_question:
                    st.write(f"result[\"\result\"] = {graph_result['result']}")    
             else:
                  st.write(f"result[\"answer\"] = {graph_result['answer']}")       
-else:
-     st.chat_message("assistant").write("Your question is not related to SQL. Please ask a valid SQL-related question.")
 
 
 
