@@ -2,7 +2,7 @@ from langgraph.graph import StateGraph,END,START
 from sql_graph.sql_state import graph
 from langgraph.types import interrupt,Command
 from sql_graph.sql_nodes import attemp_fix_select,refill_attemps,attemp_query_node,schema_node,query_node,validate_sql_node,first_routing
-from sql_graph.sql_nodes import approve_routing
+from sql_graph.sql_nodes import approve_routing,not_sql
 from sql_graph.select_part import execute_select_node,decode_to_natural_language,select_routing,fix_select
 from sql_graph.common import cyclic_attempts_fix_node,explain_final_answer,fix_common_node,common_routing,explain_sql,common_approve_node,continue_human_decision
 from sql_graph.insert import execute_insert_node
@@ -33,13 +33,16 @@ graph.add_node("explain_final_answer",explain_final_answer)
 graph.add_node("execute_insert_node",execute_insert_node)
 graph.add_node("execute_update_node",execute_update_node)
 graph.add_node("execute_delete_node",execute_delete_node)
+graph.add_node("not_sql",not_sql)
+graph.add_node("approve_routing",approve_routing)
 
 
 
 ###################################  Edges
     
 graph.add_edge(START,"schema_node")
-graph.add_conditional_edges("schema_node",approve_routing)
+graph.add_edge("schema_node","approve_routing")
+graph.add_edge("not_sql",END)
 graph.add_edge("query_node","validate_sql_node")
 # graph.add_conditional_edges("validate_sql_node",operation_verify)
 graph.add_conditional_edges("validate_sql_node",first_routing)
@@ -74,6 +77,8 @@ config = {
                 "thread_id": str(uuid4()),
             }
         }
+
+
 
 # user_question = input("Enter your question: ")
 

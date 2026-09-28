@@ -1,10 +1,12 @@
+from turtle import goto
+
 from sql_graph.sql_state import SqlState
 from llm import llm_gpt
 from sql.db_schema import get_schema,execute_sql
 from langgraph.graph import START,END
 from pydantic import BaseModel,Field
 from sql_graph.pydantic_classes import Verify_user_query
-
+from langgraph.types import Command,interrupt
 
 #---------------------------------------------------------------------
 
@@ -21,19 +23,38 @@ def approve_routing(state:SqlState):
     print("Enter in approve_routing node")
     approve_model=llm_gpt.with_structured_output(Verify_user_query)
     user_query=state["user_question"]
-    approve_result=approve_model.invoke(f"Find that given user question is related to SQL or not user_question={user_query}. Give answer in bool")
+    given_schema=state["schema"]
+    approve_result=approve_model.invoke(f"Find the category of the user question: {user_query}. Given the database schema: {given_schema}. if user question is related to the given schema return 'related_to_given_schema', otherwise return 'not_related_to_given_schema'.")
+    where_to=approve_result.question_type
     try:
-       if approve_result.approve:
-           return "query_node"
+       if where_to=="related_to_given_schema":
+           where_to="query_node"
+       elif where_to=="not_related_to_given_schema":
+           where_to="not_sql"
        else:
            print("Your question is not related to SQL. Please ask a valid SQL-related question.")
-           print(f"bool value of approve_result.approve={approve_result.approve}")
+           print(f"bool value of approve_result.question_type={approve_result.question_type}")
            print(f"approve_result={approve_result}")
            return END
     except Exception as e:
         print(f"Error in approve_routing node error={e}")
         raise ValueError()
 
+    return Command(
+        goto=where_to
+    )
+#---------------------------------------------------------------------
+
+def not_sql(state:SqlState):
+    print("Enter in not sql node")
+    llm_answer=llm_gpt.invoke(f"Explain this to user = {state["user_question"]} and tell them that their question is not related to SQL. Please ask a valid SQL-related question.")
+    return Command(
+        update={
+            "answer":llm_answer.content,
+            
+        },
+        goto=END
+    )
 
 
 

@@ -21,8 +21,8 @@ with st.chat_message("user"):
                          "answer": ""
                      }), config=config)
          
-sql=graph_result["sql"]   
-if len(sql.strip()) > 0:
+
+if user_question:
     with st.chat_message("assistant"):
          
 
@@ -33,15 +33,17 @@ if len(sql.strip()) > 0:
             for task in state.tasks:
                for interrupt in task.interrupts:
                     st.write("Interrupt:", interrupt.value)
-
-            command_input = st.text_input("Enter command : ")
-            if command_input:
-                app.invoke(Command(resume=command_input), config=config)
-                st.write(f"result[\"sql\"] = {graph_result['sql']}")
-                st.write(f"result[\"operation\"] = {graph_result['operation']}")
-                st.write(f"result[\"answer\"] = {graph_result['answer']}")
-                st.write(f"result[\"error\"] = {graph_result['error']}")
-                st.write(f"result[\"\result\"] = {graph_result['result']}")    
+            if graph_result["operation"]:
+                command_input = st.text_input("Enter command : ")
+                if command_input:
+                   app.invoke(Command(resume=command_input), config=config)
+                   st.write(f"result[\"sql\"] = {graph_result['sql']}")
+                   st.write(f"result[\"operation\"] = {graph_result['operation']}")
+                   st.write(f"result[\"answer\"] = {graph_result['answer']}")
+                   st.write(f"result[\"error\"] = {graph_result['error']}")
+                   st.write(f"result[\"\result\"] = {graph_result['result']}")    
+            else:
+                 st.write(f"result[\"answer\"] = {graph_result['answer']}")       
 else:
      st.chat_message("assistant").write("Your question is not related to SQL. Please ask a valid SQL-related question.")
 
