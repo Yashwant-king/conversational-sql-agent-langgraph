@@ -14,6 +14,7 @@ from langchain_groq import ChatGroq
 
 def enter_your_api_key(api_key:str):
     try:
+        
         return ChatGroq(
             model=api_key
         )
